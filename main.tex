@@ -1,0 +1,39 @@
+% main.tex
+\documentclass[a4paper,12pt]{report}
+
+% Inclusione del preambolo
+\input{preamble.tex}
+
+\begin{document}
+
+% Inclusione della pagina del titolo
+\input{titlepage.tex}
+
+% Generazione del sommario
+\tableofcontents
+\newpage
+
+% Generazione della Lista delle Figure
+\listoffigures
+\newpage
+
+% Inclusione dei capitoli
+\include{chapters/capitolo1}
+\blankpage
+\include{chapters/capitolo2}
+\include{chapters/capitolo3}
+% Aggiungi ulteriori capitoli secondo necessità
+
+\blankpage
+% Inclusione della bibliografia
+\addcontentsline{toc}{chapter}{Bibliografia}
+\bibliographystyle{IEEEtran} % Puoi cambiare lo stile secondo le tue preferenze
+\bibliography{bibliography/references}
+
+% Inclusione delle appendici
+\appendix
+\include{appendices/appendiceA}
+\include{appendices/appendiceB}
+% Aggiungi ulteriori appendici secondo necessità
+
+\end{document}

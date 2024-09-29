@@ -1,0 +1,38 @@
+% preamble.tex
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[italian]{babel}
+\selectlanguage{italian}
+\usepackage{lmodern}
+\usepackage{graphicx}
+\usepackage{setspace}
+\usepackage{titlesec}
+\usepackage{tocloft}
+\usepackage{geometry}
+\usepackage{amsmath, amsfonts, amssymb}
+\usepackage{float}
+\usepackage{hyperref}
+
+% Configurazione della geometria della pagina
+\geometry{
+    a4paper,
+    left=25mm,
+    right=25mm,
+    top=30mm,
+    bottom=30mm,
+}
+
+% Impostazione dello spazio interlinea
+\onehalfspacing
+
+% Definizione di comandi personalizzati
+\newcommand{\blankpage}{
+    \newpage
+    \thispagestyle{empty}
+    \mbox{}
+    \newpage
+}
+
+% Altre configurazioni e pacchetti personalizzati
+% \usepackage{...}
+% \input{utils/commands.tex} % Se hai comandi personalizzati
