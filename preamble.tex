@@ -11,7 +11,6 @@
 \usepackage{geometry}
 \usepackage{amsmath, amsfonts, amssymb}
 \usepackage{float}
-\usepackage{hyperref}
 
 % Configurazione della geometria della pagina
 \geometry{
@@ -32,6 +31,21 @@
     \mbox{}
     \newpage
 }
+
+% Configurazione di hyperref
+\usepackage[
+    bookmarks=true,
+    bookmarksopen=true,
+    bookmarksnumbered=true,
+    colorlinks=true,
+    linkcolor=blue,
+    urlcolor=blue,
+    citecolor=blue,
+    pdftitle={Titolo del tuo documento},
+    pdfauthor={Il tuo nome},
+    pdfsubject={Argomento del documento},
+    pdfkeywords={parole chiave}
+]{hyperref}
 
 % Altre configurazioni e pacchetti personalizzati
 % \usepackage{...}

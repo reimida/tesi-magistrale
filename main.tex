@@ -25,15 +25,18 @@
 % Aggiungi ulteriori capitoli secondo necessità
 
 \blankpage
-% Inclusione della bibliografia
-\addcontentsline{toc}{chapter}{Bibliografia}
-\bibliographystyle{IEEEtran} % Puoi cambiare lo stile secondo le tue preferenze
-\bibliography{bibliography/references}
 
 % Inclusione delle appendici
 \appendix
 \include{appendices/appendiceA}
 \include{appendices/appendiceB}
-% Aggiungi ulteriori appendici secondo necessità
+
+\blankpage
+% Inclusione della bibliografia
+\cleardoublepage
+\phantomsection
+\addcontentsline{toc}{chapter}{Bibliografia}
+\bibliographystyle{IEEEtran} % Puoi cambiare lo stile secondo le tue preferenze
+\bibliography{bibliography/references}
 
 \end{document}

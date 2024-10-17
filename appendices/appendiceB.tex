@@ -1,0 +1,136 @@
+% appendices/appendiceB.tex
+\chapter{Matematica Reti Convoluzionali}
+\label{appendix:B}
+
+\section*{Equivalenza tra perceptron e filtro convoluzionale su una regione dell'immagine}
+
+Un \textbf{perceptron} è un modello neurale che calcola un output \( y \) basato su un insieme di input \( \mathbf{x} = [x_1, x_2, \dots, x_n] \), pesi associati \( \mathbf{w} = [w_1, w_2, \dots, w_n] \), e un bias \( b \). La formula del perceptron è:
+
+\[
+y = \phi\left(\sum_{j=1}^{n} w_j x_j + b\right)
+\]
+
+Dove:
+\begin{itemize}
+    \item \( \phi \) è la funzione di attivazione (ad esempio, ReLU, Sigmoid, Step Function).
+    \item \( \sum_{j=1}^{n} w_j x_j + b \) è la somma pesata degli input più il bias.
+\end{itemize}
+
+\noindent\textbf{Convoluzione su una Singola Regione dell'Immagine}
+
+\vspace{0.5em} % Aggiunge spazio verticale dopo il titolo
+
+\noindent Consideriamo una regione \( \mathbf{R}_i \) dell'immagine di dimensioni \( M \times N \) e un filtro \( \mathbf{K} \) (o kernel) di dimensioni \( M \times N \). L'operazione di \textbf{convoluzione} su questa regione è definita come:
+
+\[
+S_i = \sum_{m=1}^{M} \sum_{n=1}^{N} K(m,n) \cdot R_i(m,n) + b
+\]
+
+Dove:
+\begin{itemize}
+    \item \( S_i \) è il risultato della convoluzione prima dell'applicazione della funzione di attivazione.
+    \item \( K(m,n) \) sono i pesi del filtro.
+    \item \( R_i(m,n) \) sono i pixel della regione \( \mathbf{R}_i \) dell'immagine.
+    \item \( b \) è il bias.
+\end{itemize}
+
+\noindent\textbf{Espansione Completa della Sommatoria}
+
+\vspace{0.5em} % Aggiunge spazio verticale dopo il titolo
+
+\noindent Espandiamo la sommatoria per una specifica regione \( \mathbf{R}_i \) di dimensioni \( 3 \times 3 \):
+
+\[
+S_i = K(1,1) \cdot R_i(1,1) + K(1,2) \cdot R_i(1,2) + K(1,3) \cdot R_i(1,3) 
+\]
+\[
+\quad + K(2,1) \cdot R_i(2,1) + K(2,2) \cdot R_i(2,2) + K(2,3) \cdot R_i(2,3) 
+\]
+\[
+\quad + K(3,1) \cdot R_i(3,1) + K(3,2) \cdot R_i(3,2) + K(3,3) \cdot R_i(3,3) + b
+\]
+
+\noindent\textbf{Rappresentazione come Prodotto Scalare}
+
+\vspace{0.5em} % Aggiunge spazio verticale dopo il titolo
+
+\noindent Possiamo rappresentare questa operazione come un \textbf{prodotto scalare} tra due vettori appiattiti: uno che contiene i pixel della regione \( \mathbf{R}_i \) e l'altro che contiene i pesi del filtro \( \mathbf{K} \).
+
+Definiamo i vettori appiattiti:
+
+\[
+\mathbf{x}_i = \begin{bmatrix}
+R_i(1,1) \\
+R_i(1,2) \\
+R_i(1,3) \\
+R_i(2,1) \\
+R_i(2,2) \\
+R_i(2,3) \\
+R_i(3,1) \\
+R_i(3,2) \\
+R_i(3,3)
+\end{bmatrix}, \quad 
+\mathbf{w} = \begin{bmatrix}
+K(1,1) \\
+K(1,2) \\
+K(1,3) \\
+K(2,1) \\
+K(2,2) \\
+K(2,3) \\
+K(3,1) \\
+K(3,2) \\
+K(3,3)
+\end{bmatrix}
+\]
+
+Il prodotto scalare tra \( \mathbf{w} \) e \( \mathbf{x}_i \) è:
+
+\[
+\mathbf{w} \cdot \mathbf{x}_i = K(1,1)R_i(1,1) + K(1,2)R_i(1,2) + K(1,3)R_i(1,3) 
+\]
+\[
+\quad + K(2,1)R_i(2,1) + K(2,2)R_i(2,2) + K(2,3)R_i(2,3) 
+\]
+\[
+\quad + K(3,1)R_i(3,1) + K(3,2)R_i(3,2) + K(3,3)R_i(3,3)
+\]
+
+Quindi, possiamo riscrivere \( S_i \) come:
+
+\[
+S_i = \mathbf{w} \cdot \mathbf{x}_i + b
+\]
+
+\noindent\textbf{Convoluzione con Funzione di Attivazione}
+
+\vspace{0.5em} % Aggiunge spazio verticale dopo il titolo
+
+\noindent Dopo aver calcolato \( S_i \), applichiamo una \textbf{funzione di attivazione} \( \phi \) per ottenere l'output \( y_i \):
+
+\[
+y_i = \phi(S_i) = \phi\left(\mathbf{w} \cdot \mathbf{x}_i + b\right)
+\]
+
+\noindent\textbf{Equivalenza con la Formula del Perceptron}
+
+\vspace{0.5em} % Aggiunge spazio verticale dopo il titolo
+
+\noindent La formula del \textbf{perceptron} è data da:
+
+\[
+y = \phi\left(\sum_{j=1}^{n} w_j x_j + b\right)
+\]
+
+Dove:
+\begin{itemize}
+    \item \( \mathbf{x} = [x_1, x_2, \dots, x_n] \) sono gli input.
+    \item \( \mathbf{w} = [w_1, w_2, \dots, w_n] \) sono i pesi.
+    \item \( b \) è il bias.
+    \item \( \phi \) è la funzione di attivazione.
+\end{itemize}
+
+\noindent Confrontando le due formule, vediamo che:
+
+\[
+y_i = \phi\left(\mathbf{w} \cdot \mathbf{x}_i + b\right) = \phi\left(\sum_{i=1}^{n} w_i x_i + b\right) = \phi\left(\sum_{j=1}^{n} w_j x_j + b\right)
+\]
