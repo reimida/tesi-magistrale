@@ -1,56 +1,58 @@
-% preamble.tex
+\documentclass[%
+	corpo=13pt,
+    twoside,
+    stile=classica,
+    oldstyle,
+    tipotesi=custom,
+    greek,
+    evenboxes,
+]{toptesi}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
-\usepackage{xcolor}
-\usepackage[italian]{babel}
-\selectlanguage{italian}
 \usepackage{lmodern}
-\usepackage{graphicx}
-\usepackage{setspace}
-\usepackage{titlesec}
-\usepackage{tocloft}
-\usepackage{geometry}
-\usepackage{amsmath, amsfonts, amssymb}
-\usepackage{float}
 
-% Configurazione della geometria della pagina
-\geometry{
-    a4paper,
-    left=25mm,
-    right=25mm,
-    top=30mm,
-    bottom=30mm,
-}
+\usepackage{hyperref}
+\hypersetup{%
+    pdfpagemode={UseOutlines},
+    bookmarksopen,
+    pdfstartview={FitH},
+    colorlinks,
+    linkcolor={blue},
+    citecolor={blue},
+    urlcolor={blue}
+  }
 
-% Impostazione dello spazio interlinea
-\onehalfspacing
+%%%%%%% use PDFLATEX 
 
-% Definizione di comandi personalizzati
+\usepackage{lipsum} %to insert random text
+
+\usepackage{geometry} %for the margins
+\newcommand\fillin[1][4cm]{\makebox[#1]{\dotfill}} %for the dotted line in the frontispiace
+
+\usepackage{dcolumn}
+\newcolumntype{d}{D{.}{.}{-1} } %to vetical align numbers in tables, along the decimal dot
+
+\usepackage{amsmath}
+
+%\usepackage{natbib} % for the bibliography
+\bibliographystyle{plainnat}
+
+
+%%%%%%% Local definitions
+\newtheorem{osservazione}{Osservazione}% Standard LaTeX
+\newtheorem{observation}{Observation}% Standard LaTeX
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \newcommand{\blankpage}{
     \newpage
     \thispagestyle{empty}
     \mbox{}
     \newpage
 }
-
-% Configurazione di hyperref
-\usepackage[
-    bookmarks=true,
-    bookmarksopen=true,
-    bookmarksnumbered=true,
-    colorlinks=true,
-    linkcolor=blue,
-    urlcolor=blue,
-    citecolor=blue,
-    pdftitle={Titolo del tuo documento},
-    pdfauthor={Il tuo nome},
-    pdfsubject={Argomento del documento},
-    pdfkeywords={parole chiave}
-]{hyperref}
-
-% Definizione di un verde fluo personalizzato
-\definecolor{Fluo}{RGB}{0,255,0} % Verde puro
-
-% Altre configurazioni e pacchetti personalizzati
-% \usepackage{...}
-% \input{utils/commands.tex} % Se hai comandi personalizzati

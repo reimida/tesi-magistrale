@@ -1,5 +1,4 @@
 % main.tex
-\documentclass[a4paper,12pt]{report}
 
 % Inclusione del preambolo
 \input{preamble.tex}
@@ -15,13 +14,10 @@
 
 % Generazione della Lista delle Figure
 \listoffigures
-\newpage
 
 % Inclusione dei capitoli
 \include{chapters/capitolo1}
-\blankpage
 \include{chapters/capitolo2}
-\blankpage
 \include{chapters/capitolo3}
 \include{chapters/capitolo4}
 % Aggiungi ulteriori capitoli secondo necessità
@@ -35,9 +31,6 @@
 
 \blankpage
 % Inclusione della bibliografia
-\cleardoublepage
-\phantomsection
-\addcontentsline{toc}{chapter}{Bibliografia}
 \bibliographystyle{IEEEtran} % Puoi cambiare lo stile secondo le tue preferenze
 \bibliography{bibliography/references}
 
