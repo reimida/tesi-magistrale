@@ -147,20 +147,21 @@ AWS è una piattaforma innovativa, che annuncia costantenemente nuovi prodotti. 
 I servizi gestiti forniti dal provider sono pensati per risolvere problemi comuni, in modo tale che il cliente si focalizzi solo sulle soluzioni. Per cui non sarà necessario implementare meccanismi di load balancing o per le notifiche in quanto AWS fornisce queste funzionalità a priori. %3 automation
 Il paradigma Infrastructure as Code (IaC) rende la gestione delle risorse automatica: si tratta di un effetto collaterale dell'utilizzo delle API. L'utente deve solo dichiarare le risorse necessarie, non gestire manualmente la loro allocazione. Una volta definite le parti del sistema, sarà compito di AWS invocare i comandi che servono per la loro creazione. %4 scaling
 La capacità del cloud si può adattare in proporzione al carico di lavoro, definendo un numero di macchine virtuali in base alla periodicità (giorni, settimane, mesi) e a quando vengono raggiunti i picchi. Basta incrementare il numero di macchine virtuali e quando non saranno più necessarie eliminarle. Questo meccanismo avviene molto velocemente, quindi non si tratta solo di un vantaggio di scalabilità, ma anche di velocità di allocazione e deallocazione delle risorse. %5 relability
-AWS offre dei servizi che sono affidabili by default: ad esempio S3 è progettato per avere una durabilità dei dati al 99,9\%. Inoltre vengono forniti strumenti per rendere la propria infrastruttura affidabile, non limitandosi quindi solo ai servizi, ma anche a livello di sistema. La possibilità di poter deployare la propria infrastruttura in più regioni rientra in questa categoria. Oltre ad essere un vantaggio in termini di accessibilità, latenza e protezione dei dati, quando una delle repliche possiede un guasto, si può continuare a garantire il servizio utilizzando il deploy di un'altra regione. Inoltre, vengono forniti dei servizi per il monitoraggio e l'alterting dell'infrastruttura, come nel caso di Amazon CloudWatch e AWS X-Ray. Si possono così controllare le metriche principali come latenza, utilizzo delle risorse e throughput. Nel momento in cui si verificano anomalie si possono poi impostare degli avvisi per reagire tempestivamente agli eventi inattesi. 
+AWS offre dei servizi che sono affidabili by default: ad esempio S3 è progettato per avere una durabilità dei dati al 99,9\%. Inoltre vengono forniti strumenti per rendere la propria infrastruttura affidabile, non limitandosi quindi solo ai servizi, ma anche a livello di sistema. La possibilità di poter deployare la propria infrastruttura in più regioni rientra in questa categoria. Oltre ad essere un vantaggio in termini di accessibilità, latenza e protezione dei dati, quando una delle repliche possiede un guasto, si può continuare a garantire il servizio utilizzando il deploy di un'altra regione. Inoltre, sempre nell'ottica dell'affidabilità, vengono forniti dei servizi per il monitoraggio e l'alterting dell'infrastruttura, come nel caso di Amazon CloudWatch e AWS X-Ray. Si possono così controllare le metriche principali come latenza, utilizzo delle risorse e throughput. Nel momento in cui si verificano anomalie si possono poi impostare degli avvisi per reagire tempestivamente agli eventi inattesi. 
 
 %introduzione ai servizi e deep-down a quelli che ho utilizzato
-Come si può notare in Figura \ref{fig:services_taxonomy}, i servizi offerti da AWS si dividono in due categorie: hardware e software. Alcuni di quelli appartenenti al secondo caso si basano sulla infrastruttura sottostante. Poiché in questo lavoro si è sfruttato unicamente il modello SaaS, il focus della classificazione nell'analisi sarà solo sulla parte software.
+Come si può notare in Figura \ref{fig:services_taxonomy}, i servizi offerti da AWS si dividono in due categorie: hardware e software, basati sull' infrastruttura sottostante. Poiché in questo lavoro si è sfruttato unicamente il modello PaaS, % o SaaS? Descrivi i modelli in appendice 
+il focus della classificazione nell'analisi sarà solo sulla parte software.
 %vedi se riesci a produrre un'immagine coerente
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.9\textwidth]{figures/aws_services_taxonomy.png}
+    \includegraphics[width=0.59\textwidth]{figures/aws_services_taxonomy.png}
     \caption{Classificazione ad alto livello dei servizi AWS. Accessibili attraverso API, si dividono nelle due macro-aree hardware e software.}
     \label{fig:services_taxonomy}
 \end{figure}
 
-Per quanto riguarda la categoria compute, l'obiettivo è quello di fornire rispettivamente servizi per l'esecuzione di applicazioni su macchine virtuali e per la gestione delle risorse di calcolo, come nel caso di Elastic Compute Cloud (EC2). Per app si intendono quei servizi a diretto supporto delle applicazioni, necessari per la risoluzione di problemi comuni, come l'implementazione delle code di messaggi o delle notifiche. I servizi enterprise sono pensati per la gestione delle risorse aziendali, ad esempio Organizations è un tool per la gestione di più account AWS, in modo tale da poter effettuare raggruppamenti in base alle unità nell'organizzazione ed aggregare policy e operazioni per ciascun gruppo. La categoria deployment, come si può facilmente intuire, fornisce strumenti per la distribuzione del software. Storage è l'insieme dei servizi per la memorizzazione dei dati in modo sicuro, scalabile e di lunga durata. Tra questi rientrano sicuramente gli object store come S3 e i servizi di archiviazione a lungo termine e backup come Glacier. %mancano networking e database.
-In Tabella \ref{tab:aws_services}, infine, viene fatta la classificazione dei servizi utilizzati per implementase il sistema di rilevazione dei DPI, con una breve descrizione del loro funzionamento. L'obiettivo delle sezioni successive è quello di fornire un'analisi dettagliata di questi servizi, avendo una rilevanza maggiore rispetto a quanto visto finora a titolo introduttivo.
+Per quanto riguarda la categoria compute, l'obiettivo è quello di fornire rispettivamente servizi per l'esecuzione di applicazioni su macchine virtuali e per la gestione delle risorse di calcolo, come nel caso di Elastic Compute Cloud (EC2). Per app si intendono quei servizi a diretto supporto delle applicazioni, necessari per la risoluzione di problemi comuni, come l'implementazione delle code di messaggi o delle notifiche. I servizi enterprise sono pensati per la gestione delle risorse aziendali, ad esempio Organizations è un tool per il controllo di più account AWS, in modo tale da poter effettuare raggruppamenti in base alle unità nell'organizzazione ed aggregare policy e operazioni per ciascun gruppo. La categoria deployment, come si può facilmente intuire, fornisce strumenti per la distribuzione del software. Storage è l'insieme dei servizi per la memorizzazione dei dati in modo sicuro, scalabile e di lunga durata. Tra questi rientrano sicuramente gli object store come S3 e i servizi di archiviazione a lungo termine e backup come Glacier. Le ultime due categorie riguardano i database (RDS per i relazionali, DynamoDB per quelli non relazionali) ed il networking come Virtual Private Cloud (VPC) per la creazione di reti isolate nel cloud. %mancano networking e database.
+In Tabella \ref{tab:aws_services}, infine, viene mostrata la tassonomia, secondo le classi appena definite, dei servizi usati nell'implementazione del sistema di rilevazione dei DPI, con una breve descrizione del loro funzionamento, approfondito nel capitolo successivo. 
 
 \begin{longtable}{@{}p{3cm}p{2.5cm}p{7cm}@{}}
 \toprule
@@ -183,13 +184,13 @@ AWS IoT Core e Greengrass & App & Controllano in maniera coordinata lo stato dei
 %aggiungi tabella con i servizi che hai usato
 %introduci parte successiva
 
-\subsection{Infrastructure as Code}
-\subsection{Serverless}
-\subsection{Iam Policy}
-\subsection{Kinesis Video Streams}
-\subsection{AWS Iot Core e Greengrass}
+%\subsection{Infrastructure as Code}
+%\subsection{Serverless}
+%\subsection{Iam Policy}
+%\subsection{Kinesis Video Streams}
+%\subsection{AWS Iot Core e Greengrass}
 \section{Apache Flink}
-\section{GStreamer}
+%\section{GStreamer}
 
 
 
