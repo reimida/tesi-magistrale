@@ -150,7 +150,7 @@ La capacità del cloud si può adattare in proporzione al carico di lavoro, defi
 AWS offre dei servizi che sono affidabili by default: ad esempio S3 è progettato per avere una durabilità dei dati al 99,9\%. Inoltre vengono forniti strumenti per rendere la propria infrastruttura affidabile, non limitandosi quindi solo ai servizi, ma anche a livello di sistema. La possibilità di poter deployare la propria infrastruttura in più regioni rientra in questa categoria. Oltre ad essere un vantaggio in termini di accessibilità, latenza e protezione dei dati, quando una delle repliche possiede un guasto, si può continuare a garantire il servizio utilizzando il deploy di un'altra regione. Inoltre, sempre nell'ottica dell'affidabilità, vengono forniti dei servizi per il monitoraggio e l'alterting dell'infrastruttura, come nel caso di Amazon CloudWatch e AWS X-Ray. Si possono così controllare le metriche principali come latenza, utilizzo delle risorse e throughput. Nel momento in cui si verificano anomalie si possono poi impostare degli avvisi per reagire tempestivamente agli eventi inattesi. 
 
 %introduzione ai servizi e deep-down a quelli che ho utilizzato
-Come si può notare in Figura \ref{fig:services_taxonomy}, i servizi offerti da AWS si dividono in due categorie: hardware e software, basati sull' infrastruttura sottostante\cite{a10AWSinAction}. Poiché in questo lavoro si è sfruttato unicamente il modello PaaS, % o SaaS? Descrivi i modelli in appendice 
+Come si può notare in Figura \ref{fig:services_taxonomy}, i servizi offerti da AWS si dividono in due categorie: hardware e software, basati sull' infrastruttura sottostante\cite{a10AWSinAction}. Poiché in questo lavoro si è sfruttato unicamente il modelli Platform as a Services (PaaS) e Software as a Service (SaaS), 
 il focus della classificazione nell'analisi sarà solo sulla parte software.
 %vedi se riesci a produrre un'immagine coerente
 \begin{figure}[htbp]
@@ -176,11 +176,15 @@ In Tabella \ref{tab:aws_services}, infine, viene mostrata la tassonomia, secondo
 CloudFormation & Deployment & Tramite il paradigma Infrastructure as Code, permette la dichiarazione di uno stack con le risorse necessarie ed indica le policy di accesso tra i vari servizi. \\ \midrule
 Lambda & Compute & Funzione utilizzata in architetture event-driven, programmata senza dover gestire l'infrastruttura sottostante (macchine virtuali, sistemi operativi). \\ \midrule
 IAM Policy & Enterprise & Consente di definire le regole di accesso e autorizzazione tra servizi AWS, rendendo possibili interazioni sicure e controllate. \\ \midrule
-Kinesis-Video Streams & App & Gestisce in maniera scalabile l'ingestion di flussi video dall'esterno del cloud e li inoltra a servizi downstream, come S3, EC2 o applicazioni di machine learning (e.g. Rekognition). \\ \midrule
+Kinesis-Video Streams & App & Gestisce in maniera scalabile l'ingestion di flussi multimediali dall'esterno del cloud e li inoltra a servizi downstream, come S3, EC2 o applicazioni di machine learning (e.g. Rekognition). \\ \midrule
+Kinesis-Data Streams & App & Progettato per gestire flussi di dati non multimediali (JSON, testo), provenienti da fonti come sensori IoT, inoltrati successivamente a servizi big data come Kinesis Data Analytics(KDA) o per lo storage (S3, DynamoDB) \\ \midrule   
+Kinesis-Data Analytics & App & Utilizzato per analisi dei dati in real-time provenienti da flussi generati da Kinesis Data Streams oppure Apache Kafka \\ \midrule
+Amazon Rekognition & App & Sfrutta modelli di Deep Learning per identificare oggetti, persone, scene all'interno di immagini e video. \\ \midrule
 AWS IoT Core e Greengrass & App & Controllano in maniera coordinata lo stato dei dispositivi IoT e inoltrano i relativi messaggi di telemetria provenienti dall'edge. \\ \bottomrule
 \caption{Classificazione dei servizi AWS di interesse.} \label{tab:aws_services}
 \end{longtable}
 
+Fatta eccezione per Amazon Rekognition, tutti questi servizi rientrano nella categria PaaS, in quanto gran parte della gestione è delegata ad AWS, ma sono presenti delle ulteriori configurazioni perché possano funzionare correttamente. Ad esempio Kinesis Data Analytics richiede di sviluppare applicazioni come Apache Flink e di collegare sorgenti e destinazioni. Come già visto nel precedente capitolo invece, per usare Amazon Rekognition basta invocare la sua API e si otterrà subito una risposta, senza ulteriore overhead di gestione. 
 %aggiungi tabella con i servizi che hai usato
 %introduci parte successiva
 
