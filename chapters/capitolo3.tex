@@ -243,11 +243,11 @@ Ciò avviene per mezzo di strategie che definiscono come i dati vengono scambiat
 
 \begin{itemize}
 	\item \textbf{forward}: permette di portare gli elementi dalla sorgente ad un altro punto del grafo. E' l'operazione più semplice e meno costosas che si possa applicare.
-	\item \textbf{repartition}: si tratta di un'operazione di filtro e raggruppamento. Questo tipo di operazione è più costosa del forward. I dati deve essere serializzati, perché in base a qual è l'operatore di destinazione, potrebbe essere inviato nella rete. Un altro operatore infatti potrebbe trovarsi su un nodo diverso da quello di partenza.
+	\item \textbf{repartition}: si tratta di un'operazione di filtro e raggruppamento. Questo tipo di operazione è più costosa del forward. I dati devono essere serializzati, perché in base a qual è l'operatore di destinazione, potrebbero essere spediti in rete. Un altro operatore infatti potrebbe trovarsi su un nodo diverso da quello di partenza.
 	\item \textbf{rebalance}: questa operazione riduce il parallelismo dello stream, ad esempio si potrebbe passare da due flussi ad uno solo. Per l'arbitraggio dei dati che attraversano l'operatore si sfrutta l'algoritmo Round-Robin. Anche in questo caso il costo dell'operazione è rilevante, in quanto di nuovo è necessaria la serializzazione e l'invio dei dati in un altro nodo dell'infrastruttura.
 \end{itemize}  
 
-In Figura \ref{fig:dataflow-l} viene mostrato un esempio di dataflow logico, con diverse trasformazioni. Il source può essere di diverse tipologie, e nell'ambito di questa tesi viene utilizzato il Kinesis Data Stream connector, per estrarre i record dal servizio gestito Amazon. %fornisci un esempio e aggiungi un commento per le trasformazioni che salvano internamente lo stato.
+In Figura \ref{fig:dataflow-l} viene mostrato un esempio di dataflow logico, con diverse trasformazioni. Il source può essere di varie tipologie, e nell'ambito di questa tesi viene utilizzato il Kinesis Data Stream connector, per estrarre i record dal servizio gestito Amazon. %fornisci un esempio e aggiungi un commento per le trasformazioni che salvano internamente lo stato.
 
 \begin{figure}[htbp]
     \centering
@@ -265,11 +265,12 @@ Questo grafo viene elaborato dal Job Manager, subendo una mappatura nel cluster,
     \label{fig:dataflow-phy}
 \end{figure}  
 
-Un altro dettaglio, che non viene descritto nella rappresentazione del dataflow fisico, è il salvataggio dello stato. Ciascun operatore stateful, come FlatMapFunction (o join?), possono infatti persistere localmente informazioni associate a più elementi processati. %espandi questa parte, mostrando che viene implementato proprio a questo livello il concetto di snapshot. 
+%aggiungi magari esempio numerico, e specifica che questo a tutti gli effetti è un esmepio di stateful stream processing
+Un altro dettaglio, che non viene mostrato nella rappresentazione del dataflow fisico, è il salvataggio dello stato. Ciascun operatore stateful, come le operazioni di aggregazione basate su una chiave di raggruppamento, può infatti persistere localmente informazioni associate a più elementi processati nel tempo. %espandi questa parte, mostrando che viene implementato proprio a questo livello il concetto di snapshot. 
 
 Il dataflow logico è generato a partire da Datastream API, una delle interfacce possibili fornite dal framework. Apache Flink offre chiamate a diversi livelli di astrazione, in base al tipo di necessità dello sviluppatore. L'insieme di API di più basso livello nello stack è costituito da process functions e Datastream. Le prime possono implementare qualsiasi operazione manipolando direttamente lo stato e i timers. Queste primitive in realtà vengono usate in coppia con Datastram, in quanto le API in Apache Flink non sono esclusive, ma interoperabili. Quindi, dal punto di vista implementativo c'è molta flessibilità, perché nel caso di richieste specifiche nella gestione degli stream, si può passare a chiamate di più basso livello, come nel caso dei timer, che servono per la gestione delle finestre temporali.
 
-Idealmente, si vorrebbe salvare lo stato in maniera indefinita, ma questo comporta dei problemi in termini di risorse. Il flusso di dati, come già visto, è indefinito, quindi l'unica soluzione per poter mantenere uno stato di dimensioni accettabili è quello di effettuare le elaborazioni per un numero di eventi limitato. L'utilizzo delle finestre serve esattamente per questo tipo di scenario. Nell'implementazione del sistema sono state usate due tipologie di finestre: quelle basate sulla conta (countwindow) e quelle su timer (window temporali). %espandi questa parte per concludere
+Idealmente, si vorrebbe salvare sempre lo stato nelle operazioni stateful, ma questo comporta dei problemi in termini di risorse. Il flusso di dati, come già visto, è indefinito, quindi l'unica soluzione per poter mantenere uno stato di dimensioni accettabili è quello di effettuare le elaborazioni per un numero di eventi limitato. L'utilizzo delle finestre serve esattamente per questo tipo di scenario. Nell'implementazione del sistema sono state usate due tipologie di finestre: quelle basate sulla sul conteggio (count windows) e quelle su timer (time windows). %espandi questa parte per concludere
 %dove viene salvato lo stato
 %tipologie di source
 %altri pattern: broadcast -> distribuisce i dati sul cluster, join -> data enrichment

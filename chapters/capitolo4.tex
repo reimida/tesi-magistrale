@@ -57,6 +57,39 @@ A differenza di altre soluzioni, come Apache Spark, questo framework non solo su
 \end{figure}
 
 \section{Edge Runtime/Ingestion}
+
+La soluzione edge, ossia l'insieme dei componenti hardware e software che dall'impianto comunicano con il coud, segue una topologia a stella. Al centro è posizionato il gateway, il quale si interfaccia con AWS da un lato, e con i dispositivi dall'altro. Più nello specifico, si tratta di una soluzione ibrida, perché uno schema centralizzato dovrebbe essere autosufficiente, ossia la sua operatività non dipende dallo stato della rete. All'interno del gateway, è installato un Docker container, composto da una serie di strati. Al primo livello è installata l'ultima versione della AMI, formata da un ambiente minimale che si basa sulle distribuzioni Linux Fedora e CentOS. In questo sistema non è possibile installare qualsiasi tipo di libreria, ma solo un numero limitato, fornito da un repository remoto di AWS. Il tutto avviene nell'ottica di una integrazione ottimizzata con il cloud, ma soprattutto per ottenere una sicurezza migliore. Avere un sistema il più possibile ridotto e con un controllo capillare delle installazioni permette di ridurre la superficie di esposizione ad attacchi informatici. Nello strato successivo, vengono instalate delle configurazioni specifiche per Greengrass all'interno dell'ambiente containerizzato. Si sarebbe potuto integrare il runtime direttamente sull'host, ma questo richiede più tempo a causa dei problemi di compatibilità e configurazione. Generando invece un container apposito è possibile replicare questo sistema su tutte le macchine dell'impianto ed in generale distribuirlo a più clienti. Vengono successivamente installate le dipendenze per Greengrass, ad esempio una Java virtual Machine, fornita da Amazon, in modo tale che questo servizio possa essere effettivamente eseguito all'interno del Docker. Contestualmente, in questo strato, una volta che le dipendenze sono pronte, si passa all'installazione effettiva di Greengrass. Lo strato successivo del filesystem è composto dalle librerie per GStreamer, il tool su cui si basa lo stream producer per KVS. Queste dipendenze non sono referenziate dal package manager di AWS, ma indebolendo opportunamente i vincoli di sistema della AMI, è possibile scaricare la giusta versione delle librerie. La customizzazione non è semplice, in quanto gli intervalli di compatibilità tra le librerie del kernel e qualsiasi altra installazione sono molto stringenti. Ad esempio, la regola più forte che si osservata durante la customizzazione è stata sulla versione di SSL, forzata ad essere quella più recente, ma non supportata dalla maggior parte delle release di GStreamer, sia a livello di dipendenze che di libreria stessa. L'ultimo strato, infine, è composto dall'installazione effettiva di questo tool.
+
+
+
+
+
+
+
+%gstreamer, breve panoramica e supporto ad rtsp e codifiche + definizione di pipeline
+In generale, GStreamer viene usato per costruire una pipeline, ossia un grafo orientato composto da operatori per la gestione di dati multimediali. Il componente software, eseguito sul gateway, internamente sfrutta una libreria che accede a GStreamer. %Per semplicità nella trattazione, verrà mostrata la generazione della la pipeline per lo streaming video con il plugin gst. Si tratta di uno strumento che può essere lanciato direttamente dalla linea di comando, ed il funzionamento è identico a quello del software. 
+Analogamente, anche le telecamere generano con lo stesso meccanismo i flussi RTSP. Nella configurazione, deve esserci anche un server che utilizza lo stesso protocollo, in modo tale da consentire l'inoltro dello streaming al gateway. L'ipotesi nello use case è che questo setup sia già disponibile in fabbrica, e che quindi i flussi RTSP siano già presenti. Poiché si sta cercando di simulare questo scenario, è stato installato mediamtx, un container di un server multimediale open-source per diversi tipi di streaming, tra cui RTSP. L'obiettivo dovrebbe essere quello di potersi agganciare agli stream ed inoltrarli in maniera sicura verso il cloud. Se le telecamere sono più sofisticate, AWS offre la possibilità di inviare i flussi direttamente sul cloud registrando i dipositivi in AWS IoT, ma in generale come meccanismo standard è utile convogliare i flussi sul gateway per diverse motivazioni. In primo luogo, l'utilizzo di un intermediario permette una gestione dello streaming più sofisticato. Inoltre il gateway possiede risorse di calcolo superiori rispetto a delle telecamere IoT. Questo, ad oggi, è fondamentale nel caso in cui si voglia deployare dei modelli di machine learning direttamente sull'edge, naturale estensione di questo sistema.
+
+Esistono diversi blocchi per la costruzione della pipeline, ma in questo caso, trattandosi di generazione ed inoltro di streaming, sono stati usati i seguenti elementi: source, sink, filtri e codec. Il source è un elemento che porta i dati dall'esterno verso la pipeline. Ad esempio si può accedere alla telecamera di un computer, file multimediali e soprattuto flussi provenienti dalla rete, basati su protocolli come RTSP ed HTTP. Il sink invece esegue l'operazione contraria: questo operatore può caricare l'output della pipeline in memoria, su dell'hardware esterno come un monitor, oppure direttamente inoltrare il flusso su un endpoint. I filtri e i codec servono per operazioni intermedie, nel primo caso per la modifica del flusso come il framerate o la dimensione del frame, mentre nel secondo per cambiare la codifica delle immagini. 
+
+
+
+%\begin{lstlisting}[language=GStreamer, caption={Pipeline GStreamer per uno stream RTSP}, label={lst:gstreamer}]
+%gst-launch-1.0 -v \
+%v4l2src device=/dev/video2 ! \
+%videoconvert ! \
+%videoscale ! \
+%video/x-raw,format=I420,width=1280,height=720,framerate=30/1 ! \
+%x264enc key-int-max=5 tune=zerolatency ! \
+%video/x-h264,stream-format=avc,alignment=au,profile=baseline ! \
+%rtspclientsink location=rtsp://user:password@localhost:8554/top
+%\end{lstlisting}
+  
+%mostra tutte le pipeline ed infine come viene usata la api nel componente greengrass
+%mostra come vengnono pubblicati i messaggi mqtt sul cloud, nonostante non abbia l'infrastruttura
+
+
+ 
 \section{Preprocessing e trasformazione dei dati}
 La parte di preprocessing, come visto nella descrizione generale, avviene tramite il coordinamento di diversi managed services, il cui fulcro è la funzione Lambda. Essa implementa la trasformazione dello streaming video in uno flusso di dati in tempo reale, integrando vari servizi AWS in maniera scalabile, efficiente e soprattuto automatica, in base al numero di stream ricevuti. I servizi utilizzati all'interno della Lambda sono Kinesis Video Streams (KVS), Amazon Rekognition, Kinesis Data Streams ed opzionalmente S3. La funzione è implementata in Python e sfrutta internamente il multithreading per l'ottimizzazione delle prestazioni. Alla base di questo sistema c'è il \texttt{lambda\textunderscore handler}, i.e. l'entryponit del codice, invocato all’arrivo di un nuovo evento. In termini più specifici, questo tipo di attivazione prende il nome di trigger e viene generato attraverso una topic rule, un meccanismo di filtro fornito da IoT Core. Poiché si tratta del payload di un messaggio MQTT, l'evento viene inviato sotto forma di JSON. Il filtro esegue quindi due operazioni: in primo luogo verifica che il topic sia quello di interesse della Lambda; successivamente può modificare il contenuto del messaggio, scartando alcuni campi, in base a come è stata definita la regola sul servizio. In generale, nella maggior parte dei casi, la comunicazione dei componenti all'interno del cloud è completamente trasparente all'utente e molti servizi non necessitano dell'invocazione diretta delle API, come invece capita normalmente nelle architetture a microservizi. La gestione viene delegata internamente all'infrastruttura AWS. Nelle parti in cui invece l'utente deve scrivere codice, la situazione è diversa: AWS in questo caso fornisce gli SDK in base al linguaggio di programmazione scelto. Nell'implementazione della funzione Lambda si sfrutta la libreria botocore per invocare le API di Rekognition e KDS.
 
@@ -92,8 +125,20 @@ Esse sono strutturate nel seguente modo:
     \centering
     \includegraphics[width=0.47\textwidth]{figures/data-model.png}
     \caption{Diagramma modello dati.} 
-    \label{fig:processing-subsystem}
+    \label{fig:data-model}
 \end{figure}
+
+Il Job, come visto nel capitolo precedente, rappresenta il nucleo del sistema di elaborazione. Il dataflow graph logico, generato dall'applicazione, si occupa di processare flussi di dati provenienti da Kinesis Data Stream, i.e. il source. L'analisi in questa prima fase avviene su due flussi differenti, poiché  dipende dal tipo di telecamera che ha generato gli stream video. Quella superiore infatti conta il numero di persone nell'area, mentre quella frontale rileva i dispositivi di sicurezza. Una volta connesso alla sorgente, si verifica la lettura dei dati in ingresso, rappresentati in JSON. Successivamente si applica un filtro, in modo tale da operare solo sui dati relativi all'analisi delle telecamere, in quanto l'applicazione, in chiave di estensione del sistema, potrebbe ricevere altre tipologie di dato dallo stesso Kinesis Data Stream. A valle del filtro, un operatore di mapping si occupa della deserializzazione dei dati, il che semplifica l'elaborazione successiva, potendo invocare dei metodi sopra gli oggetti generati a partire dal data model. Un secondo filtro viene invoca in modo tale poter discriminare i flussi delle due telecamere. Si otterebbero altrimenti dei duplicati senza questa distinzione. L'operatore keyby si occupa del loro raggrupamento in base al dispositivo, poiché si vuole ottenere in modo coerente l'analisi di un campione di frame. La logica infatti consiste nell'avere una percentuale di immagini, in cui l'accuratezza della rilevazione o del conteggio superi una certa soglia. Ogni telecamera IoT, in un breve intervallo temporale produrrà un certo numero di frame, per cui il raggruppamento serve per poter distinguere quelli prodotti da ciascuna di esse. Operativamente, l' aggregazione in modalità streaming viene effettuata con le finestre di conteggio. In maniera semplice si poteva utilizzare direttamente la funzione window, fornita dalla API Datastream, ma si è preferito optare per una implementazione di più basso livello. In questo modo si è potuto maneggiare direttamente lo stato ed osservare la logica di funzionamento per l'implementazione della process function nella coda della catena di operazioni seguenti. L'operazione FlatMap permette di poter maneggiare lo stato e le finestre a più basso livello, anche se nativamente non è un operatore strettamente stateful. 
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.99\textwidth]{figures/system-logical-dataflow-graph.png}
+    \caption{Dataflow logico del sistema.} 
+    \label{fig:system-dataflow}
+\end{figure}
+
+I due datastream vengono poi uniti, creando un unico flusso attraverso l'applicazione di una finestra temporale. Questa unione permette di correlare i dati provenienti dalle diverse tipologie di telecamere e di sincronizzare i due stream. Per evitare duplicati, un possibile effetto collaterale della finestra scorrevole, i dati vengono ulteriormente filtrati per assicurarsi che ogni richiesta proveniente dall'edge venga processata una sola volta. La fase finale del processamento prevede l'applicazione di regole specifiche per generare gli allarmi. Questi vengono prodotti solo quando la macchina monitorata è attiva e quando le condizioni di sicurezza, definite come una percentuale minima di rilevamento dell'equipaggiamento protettivo e di discrepanza nel conteggio delle persone tra sensori e modello di visione artificiale, non sono soddisfatte. Gli allarmi così generati sono rappresentati come coppie di valori, e vengono passati a una funzione Lambda per l'elaborazione finale. In particolare, la struttura dati identifica la richiesta originale inviata dall'edge tramite messaggio MQTT e il timestamp del momento di generazione dell'allarme.
+
 
 
 \section{Deployment}

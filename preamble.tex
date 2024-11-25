@@ -16,7 +16,7 @@
 \usepackage{array}
 \usepackage{longtable}
 \usepackage{booktabs}
-
+\usepackage{listings}
 % Imposta la dimensione della didascalia a small
 %\captionsetup{font=small}
 
@@ -66,3 +66,25 @@
 
 \usepackage{array}
 \usepackage{booktabs}
+
+%\lstdefinelanguage{GStreamer}{
+%    keywords={gst-launch-1.0, v4l2src, videoconvert, videoscale, video/x-raw, x264enc, rtspclientsink},
+%    keywordstyle=\color{blue}\bfseries,
+%    sensitive=false, % Case insensitive
+%    morestring=[b]", % Stringhe tra doppi apici
+%    morestring=[b]', % Stringhe tra singoli apici
+%    comment=[l]{#}, % Commenti con il simbolo `#`
+%    commentstyle=\color{green}\itshape,
+    % I simboli speciali devono essere inclusi con attenzione
+%    alsoother={:,!,/,=,-},
+%    morekeywords={!, :, /, =, -, tune, profile, location, device, format, width, height, framerate},
+%}
+
+%\lstset{
+%    basicstyle=\ttfamily\footnotesize, % Font teletype, dimensione piccola
+%    frame=single,                      % Bordo attorno al codice
+%    breaklines=true,                   % Va a capo automaticamente
+%    numbers=left,                      % Numeri di riga
+%    numberstyle=\tiny\color{gray},     % Stile dei numeri di riga
+%    captionpos=b,                      % Didascalia sotto il codice
+%}
