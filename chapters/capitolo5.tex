@@ -1,4 +1,15 @@
 \chapter{Risultati}
 
 \section{Metriche ed Analisi}
+L'obiettivo del sistema proposto è quello di lavorare near real-time, vincolato sia dai tempi di risposta della API, sia dallo use case presentato nel capitolo precedente. Al momento, si vuole validare la presenza dei DPI indossati da un lavoratore in una zona limitrofa al macchinario, e periodicamente verificare che la condizione sia rispettata. Allo stato attuale, le richieste vengono soddisfatte in tempi superiori al decimo di secondo, il che rende la prevenzione degli incidenti ancora difficile da realizzare. L'approccio utilizzato, come visto nell'implementazione del sistema, è quello di ricevere i dati via streaming, iniziando l'analisi il prima possibile, sfruttando sia il parallelismo nel preprocessing, che la reazione granulare agli eventi nell'applicazione big data. I risultati seguono in maniera coerente questa logica, per cui il focus in questa sezione è più orientato al tempo globale di risposta del sistema, ed alla soglia di frame processati con una confidenza maggiore di un dato parametro. 
+
+
+
+Questa scelta è motivata da diverse necessità. In primo luogo si vuole ottenere robustezza per le detection errate, effetto della generazione di falsi positivi e negativi. Infatti, come visto anche nei lavori correlati, è possibile che un dato oggetto non venga trovato, oppure che la predizione della classe sia errata. In secondo luogo, non avrebbe senso spegnere e riaccendere il macchinario a causa delle fluttuazioni nei rilevamenti, rendendo di fatto l'utilità del sistema poco significativa. Infine, avere un campione di un intervallo di frame permette di compensare potenziali rumori durante la registrazione, come movimenti rapidi, variazioni di angolazione, occlusioni temporanee ecc. 
+
+\section{Valutazione del Modello}
+%documentazione amazon
+%roboflow
+%dataset
+%ap per i caschi, iou 0.5 e 0.7
 \section{Limitazioni}
