@@ -1,2 +1,16 @@
 \chapter*{Conclusioni}
 \addcontentsline{toc}{chapter}{Conclusioni}
+
+%Sintesi risultati
+Il lavoro nel complesso raggiunge gli obiettivi posti in fase di definizione del sistema. Si è dimostrato che è possibile generare una soluzione basata sul cloud per rilevare i dispositivi di protezione individuale, soddisfando i requisiti funzionali imposti dallo use case. In particolare, il sistema riesce ad operare quasi in tempo reale, il che al momento non è una grossa limitazione, visto che il prototipo viene utilizzato in un contesto semplice.
+
+
+%Discussione dei risultati
+I risultati evidenziano una buona reazione ai diversi test effettuati, poiché è già possibile rilevare più individui all'interno di un live video feed, e riuscire a decidere con buona precisione se questi siano abilitati all'utilizzo di una apparecchiatura. Il sistema, infatti, è in grado di discriminare quali persone appartengono alla fabbrica e quali indossano gli equipaggiamenti corretti.
+
+%Limiti dei risultati
+La soluzione proposta non è ancora confrontabile con i lavori simili nel campo, in quanto richiede l'addestramento di un modello e successivamente un deploy sull'edge, fuori dall'obbiettivo della trattazione. Questo tipo di modifica abiliterebbe, in base alla direzione scelta, al funzionamento in tempo reale, non raggiungibile con il cloud computing, intrinsecamente dipendente da connettività e latenza. 
+
+%condiderazioni
+Questo elaborato rappresenta un buon punto di partenza per raggiungere prestazioni maggiori e risolvere problemi più complessi, come la prevenzione degli incidenti. In questo lavoro infatti è stato presentato come definire l'infrastruttura nel dominio di applicazione e nei risultati è stato proposto come superare le attuali limitazioni.  %Possibile lavoro futuro: hard use case.
+Ulteriori sviluppi sono necessari per l'interfacciamento tra macchinari e cloud, ma esistono integrazioni veloci da implementare per fornire i comandi ai sistemi, come nell'esempio del container ROS integrato con Greengrass. 
