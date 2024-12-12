@@ -8,9 +8,10 @@
 \input{titlepage.tex}
 \blankpage
 % Generazione del sommario
+\cleardoublepage
+\phantomsection
 \include{chapters/sommario}
 \tableofcontents
-\newpage
 
 % Generazione della Lista delle Figure
 \listoffigures
@@ -22,6 +23,8 @@
 \include{chapters/capitolo3}
 \include{chapters/capitolo4}
 \include{chapters/capitolo5}
+\cleardoublepage
+\phantomsection
 \include{chapters/conclusioni}
 % Aggiungi ulteriori capitoli secondo necessità
 
